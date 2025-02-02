@@ -64,7 +64,7 @@ class Optimizer:
 
     def _fit_batch(self, x: NDArray, y: NDArray, batch_count: int):
         loss = 0.0, 0.0
-        batch_loss = [], []
+        batch_loss = []
 
         for batch_no in range(batch_count):
             x_window, y_window = self._get_window(batch_no, x, y)
