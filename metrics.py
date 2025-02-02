@@ -6,6 +6,7 @@ class Loss:
     def __init__(self):
         self.d_inputs = np.array([])
 
+    @staticmethod
     def calculate(self, values: NDArray, expected: NDArray) -> float:
         sample = self.forward(values, expected)
         data_loss = np.mean(sample)
@@ -18,15 +19,16 @@ class Loss:
     def backward(self, d_values: NDArray, expected: NDArray):
         raise NotImplemented
 
+ 
+class MeanSquaredError(Loss):
+    # From Neural Networks from Scratch in Python
+    # For regression
+    def forward(self, values: NDArray, expected: NDArray) -> NDArray:
+        return np.mean((expected - values) ** 2, axis=-1)
 
-class Accuracy:
-    @staticmethod
-    def calculate(values: NDArray, expected: NDArray):
-        predictions = np.argmax(values, axis=1)
+    def backward(self, d_values: NDArray, expected: NDArray):
+        samples = len(d_values)
+        outputs = len(d_values[0])
 
-        if len(expected.shape) == 2:
-            targets = np.argmax(expected, axis=1)
-
-            return np.mean(predictions == targets)
-
-        return np.mean(predictions == expected)
+        self.d_inputs = -2 * (expected - d_values) / outputs
+        self.d_inputs = self.d_inputs / samples
